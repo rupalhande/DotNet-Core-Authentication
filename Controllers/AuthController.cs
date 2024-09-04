@@ -162,7 +162,6 @@ namespace JwtAuth.Controllers
             accessToken=helper.GenerateJwtToken(user);
 
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpire=DateTime.Now.AddDays(2);
 
             await userRepository.UpdateUser(user);
             
@@ -176,7 +175,7 @@ namespace JwtAuth.Controllers
             return Ok(res);
          }
    
-        [HttpPost,Authorize]
+        [HttpGet,Authorize]
         [Route("revoke")]
          public async Task<ActionResult<ResponseDto>> Revoke()
          {
@@ -189,6 +188,8 @@ namespace JwtAuth.Controllers
                 return BadRequest(res);
              }
              user.RefreshToken = "";
+             user.RefreshTokenExpire=DateTime.Now;
+
              await this.userRepository.UpdateUser(user);
              
              res.Message = "User Successfully logout";
